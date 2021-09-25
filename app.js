@@ -68,7 +68,7 @@ const galleryRef = document.querySelector('.js-gallery');
 const modalRef = document.querySelector('.js-lightbox');
 const backdropRef = document.querySelector('.lightbox__overlay');
 const imageRef = document.querySelector('.lightbox__image');
-const closeBtn = document.querySelector('[data-action="close-lightbox]');
+const closeBtn = document.querySelector('.lightbox__button');
 
 console.log(closeBtn)
 const markup = createImage(galleryItems);
@@ -85,20 +85,18 @@ function createImage(galleryItems) {
 };
 
 function onImageClick(e) {
-   e.preventDefault();
-  if (!e.target.classList.contains('gallery__image')) {
-    return;
+  e.preventDefault();
+  if (e.target.localName  === 'img') {
+    imageRef.src = e.target.dataset.source;
+    
+    modalRef.classList.add('is-open');
   }
-  // modalRef.classList.add('is-open');
-  imageRef.src = e.target.dataset.source;
-
-  console.log(imageRef)
 }
 
-function onCloseBtnClick() {
-  
+function onCloseBtnClick(e) {
+ if (e.target.localName !== 'img') {
+    modalRef.classList.remove('is-open');
+    imageRef.src = '';  
+  }
+};
  
-  modalRef.addEventListener('click', () => {
-  modalRef.style.display = 'none';
-});
-}
