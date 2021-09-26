@@ -70,13 +70,15 @@ const backdropRef = document.querySelector('.lightbox__overlay');
 const imageRef = document.querySelector('.lightbox__image');
 const closeBtn = document.querySelector('.lightbox__button');
 
-console.log(closeBtn)
+
+
 const markup = createImage(galleryItems);
 galleryRef.insertAdjacentHTML('afterbegin', markup);
 
 galleryRef.addEventListener('click', onImageClick);
 closeBtn.addEventListener('click', onCloseBtnClick);
-modalRef.addEventListener('click', onBackdropClick);
+document.addEventListener('keydown', onBackdropClose);
+
 
 function createImage(galleryItems) {
   return galleryItems
@@ -86,17 +88,44 @@ function createImage(galleryItems) {
 
 function onImageClick(e) {
   e.preventDefault();
-  if (e.target.localName  === 'img') {
+  if (e.target.nodeName   === 'IMG') {
     imageRef.src = e.target.dataset.source;
-    
     modalRef.classList.add('is-open');
   }
 }
 
 function onCloseBtnClick(e) {
- if (e.target.localName !== 'img') {
+ if (e.target.nodeName  !== 'IMG') {
     modalRef.classList.remove('is-open');
     imageRef.src = '';  
   }
 };
- 
+function onBackdropClose(e) {
+  if (e.key === 'Escape') {
+    modalRef.classList.remove('is-open');
+    imageRef.src = ''; 
+  }
+};
+document.addEventListener('keydown', e => {
+  let nextIndex = galleryRef.indexOf(imageRef.src);
+   if (e.key === 'ArrowLeft') {
+    onArrowLeft(nextIndex);
+  }
+  if (e.key === 'ArrowRight') {
+    onArrowRight(nextIndex);
+  }
+});
+function onArrowLeft(currentIndex) {
+  let nextIndex = currentIndex - 1;
+  if (nextIndex === -1) {
+    nextIndex = galleryRef.length - 1;
+  }
+  imageRef.src = galleryRef[nextIndex]
+}
+function onArrowRight(currentIndex) {
+  let nextIndex = currentIndex + 1;
+  if (nextIndex === galleryRef.length) {
+    nextIndex = 0;
+  }
+  imageRef.src = galleryRef[nextIndex];
+ }
