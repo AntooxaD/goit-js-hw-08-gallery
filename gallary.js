@@ -68,16 +68,17 @@ const galleryRef = document.querySelector('.js-gallery');
 const modalRef = document.querySelector('.js-lightbox');
 const backdropRef = document.querySelector('.lightbox__overlay');
 const imageRef = document.querySelector('.lightbox__image');
-const closeBtn = document.querySelector('.lightbox__button');
+const closeBtn = document.querySelector('[data-action="close-lightbox"]');
 
 
 
 const markup = createImage(galleryItems);
 galleryRef.insertAdjacentHTML('afterbegin', markup);
 
+backdropRef.addEventListener('click', onCloseBackdrop)
 galleryRef.addEventListener('click', onImageClick);
 closeBtn.addEventListener('click', onCloseBtnClick);
-document.addEventListener('keydown', onBackdropClose);
+
 
 
 function createImage(galleryItems) {
@@ -91,41 +92,45 @@ function onImageClick(e) {
   if (e.target.nodeName   === 'IMG') {
     imageRef.src = e.target.dataset.source;
     modalRef.classList.add('is-open');
+    window.addEventListener('keydown', onEscapeClose);
+    galleryRef.addEventListener('keydown', onArrow)
   }
 }
 
 function onCloseBtnClick(e) {
  if (e.target.nodeName  !== 'IMG') {
     modalRef.classList.remove('is-open');
-    imageRef.src = '';  
+   imageRef.src = '';
+   window.removeEventListener('keydown', onEscapeClose);
+   
   }
 };
-function onBackdropClose(e) {
-  if (e.key === 'Escape') {
+function onCloseBackdrop(e) {
+  if (e.target.nodeName  !== 'IMG') {
+    modalRef.classList.remove('is-open');
+    imageRef.src = '';
+    window.removeEventListener('keydown', onEscapeClose);
+  }
+}
+function onEscapeClose(e) {
+  if (e.code === 'Escape') {
     modalRef.classList.remove('is-open');
     imageRef.src = ''; 
   }
 };
-document.addEventListener('keydown', e => {
-  let nextIndex = galleryRef.indexOf(imageRef.src);
-   if (e.key === 'ArrowLeft') {
-    onArrowLeft(nextIndex);
-  }
-  if (e.key === 'ArrowRight') {
-    onArrowRight(nextIndex);
-  }
-});
-function onArrowLeft(currentIndex) {
-  let nextIndex = currentIndex - 1;
-  if (nextIndex === -1) {
-    nextIndex = galleryRef.length - 1;
-  }
-  imageRef.src = galleryRef[nextIndex]
+const onArrow = e => {
+  let nextIndex = galleryItems.findIndex(image => image.original === imageRef.src);
+  if (e.code === 'ArrowLeft') {
+    if (nextIndex > 0) {
+      nextIndex += 1;
+    }
+  } 
+  
+  if (e.key === 'ArrowRight') {    
+    if (nextIndex < galleryItems.length - 1) {
+      nextIndex += 1;
+    }
+  };
+  imageRef.src = galleryItems[nextIndex].original
 }
-function onArrowRight(currentIndex) {
-  let nextIndex = currentIndex + 1;
-  if (nextIndex === galleryRef.length) {
-    nextIndex = 0;
-  }
-  imageRef.src = galleryRef[nextIndex];
- }
+
