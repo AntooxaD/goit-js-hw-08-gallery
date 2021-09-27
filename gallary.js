@@ -120,17 +120,17 @@ function onEscapeClose(e) {
 };
 const onArrow = e => {
   let nextIndex = galleryItems.findIndex(image => image.original === imageRef.src);
+  if (e.code === 'ArrowRight') {
+    if (nextIndex < galleryItems.length - 1) {
+      nextIndex += 1;
+    }
+  }
   if (e.code === 'ArrowLeft') {
     if (nextIndex > 0) {
       nextIndex += 1;
     }
-  } 
-  
-  if (e.key === 'ArrowRight') {    
-    if (nextIndex < galleryItems.length - 1) {
-      nextIndex += 1;
-    }
   };
   imageRef.src = galleryItems[nextIndex].original
+ 
 }
 
