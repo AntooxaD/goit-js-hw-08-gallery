@@ -93,7 +93,7 @@ function onImageClick(e) {
     imageRef.src = e.target.dataset.source;
     modalRef.classList.add('is-open');
     window.addEventListener('keydown', onEscapeClose);
-    galleryRef.addEventListener('keydown', onArrow)
+    window.addEventListener('keydown', onArrow)
   }
 }
 
@@ -102,7 +102,7 @@ function onCloseBtnClick(e) {
     modalRef.classList.remove('is-open');
    imageRef.src = '';
    window.removeEventListener('keydown', onEscapeClose);
-   
+   window.removeEventListener('keydown', onArrow)
   }
 };
 function onCloseBackdrop(e) {
@@ -110,6 +110,7 @@ function onCloseBackdrop(e) {
     modalRef.classList.remove('is-open');
     imageRef.src = '';
     window.removeEventListener('keydown', onEscapeClose);
+    window.removeEventListener('keydown', onArrow)
   }
 }
 function onEscapeClose(e) {
@@ -123,14 +124,13 @@ const onArrow = e => {
   if (e.code === 'ArrowRight') {
     if (nextIndex < galleryItems.length - 1) {
       nextIndex += 1;
-    }
+    } else nextIndex = 0
   }
   if (e.code === 'ArrowLeft') {
     if (nextIndex > 0) {
-      nextIndex += 1;
-    }
+      nextIndex -= 1;
+    } else nextIndex = galleryItems.length - 1
   };
   imageRef.src = galleryItems[nextIndex].original
- 
 }
 
